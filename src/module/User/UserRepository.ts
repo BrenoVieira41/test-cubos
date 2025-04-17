@@ -29,6 +29,30 @@ class UserRepository {
       throw new Error(PRISMA_ERROR);
     }
   }
+
+  async order(query: any, skip: number, take: number): Promise<Users[] | any> {
+    try {
+      const users = await prisma.users.findMany({
+        where: query,
+        skip: skip,
+        take: take,
+        select: {
+          id: true,
+          name: true,
+          document: true,
+          role: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+        orderBy: { createdAt: 'desc' }
+      });
+
+      return users;
+    } catch (error: any) {
+      console.error('Prisma error:', error);
+      throw new Error(PRISMA_ERROR);
+    }
+  }
 }
 
 export default UserRepository;

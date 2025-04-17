@@ -35,16 +35,16 @@ class UserController {
     }
   }
 
-  // async order(req: Request, res: Response): Promise<Response> {
-  //   try {
-  //     const query = req.query;
-  //     const user = req.user;
-  //     // const orderUsers = await UserService.order(query, user);
-  //     return res.status(200).json(orderUsers);
-  //   } catch (error: any) {
-  //     return res.status(500).json({ message: error.message.split('\n') });
-  //   }
-  // }
+  async order(req: Request, res: Response): Promise<Response> {
+    try {
+      const query = req.query;
+      const user = req.user;
+      const orderUsers = await UserService.order(query, user);
+      return res.status(200).json(orderUsers);
+    } catch (error: any) {
+      return res.status(500).json({ message: error.message.split('\n') });
+    }
+  }
 
 }
 

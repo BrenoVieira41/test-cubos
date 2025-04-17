@@ -1,4 +1,4 @@
-import { Pagination, PaginationComplement } from './PaginationInterface';
+import { Filters, Pagination, PaginationComplement } from './PaginationInterface';
 import { validate as uuidValidate, version as uuidVersion } from 'uuid';
 
 function isUUID(uuid: string): boolean {
@@ -49,23 +49,24 @@ function validatePagination(input: Pagination): void {
     throw createError(erros, 400);
   }
 }
-
 function setPagination(query: Pagination) {
   const { itemsPerPage, currentPage } = query;
+
   const pageSize = itemsPerPage ? Number(itemsPerPage) : 10;
   const pageOffset = currentPage ? Math.max(Number(currentPage), 1) : 1;
+  const skip = (pageOffset - 1) * pageSize;
 
-  return { itemsPerPage: pageSize, currentPage: pageOffset };
+  return { skip, take: pageSize };
 }
 
+
 function paginate(itemsPerPage: number, currentPage: number, total: number): PaginationComplement {
-  const totalPages = Math.ceil(total / itemsPerPage);
-  const currentPageNumber = currentPage;
+  const pageSize = itemsPerPage > 0 ? itemsPerPage : 10;
+  const page = currentPage > 0 ? currentPage : 1;
 
   return {
-    currentPage: currentPageNumber,
-    itemsPerPage: itemsPerPage,
-    totalPages,
+    currentPage: page,
+    itemsPerPage: pageSize,
     total,
   };
 }

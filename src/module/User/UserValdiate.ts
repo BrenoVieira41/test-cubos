@@ -1,5 +1,6 @@
-import { cleanString, createError, isUUID, validateFields, validateIsNull } from '../utils/UtilsService';
+import { cleanString, createError, isUUID, validateFields, validateIsNull, validatePagination } from '../utils/UtilsService';
 import { CreateUserInput } from './dto/create-user.input';
+import { UsersPagination } from './dto/get-user.input';
 import { LoginInput } from './dto/login-user.input';
 import {
   CNPJ_ERROR_MESSAGE,
@@ -122,6 +123,19 @@ class UserValidate {
     const errors: string[] | any = [
       this.documentValidate(document),
       this.passwordValidate(password),
+    ].filter((error) => error);
+
+    if (errors.length) throw createError(errors, 400);
+  }
+
+  public validateOrder(query: UsersPagination):void {
+    const { name, document, currentPage, itemsPerPage, ...rest } = query;
+
+    validateFields(rest);
+
+    const errors: string[] | any = [
+      document ? this.documentValidate(document) : null,
+      validatePagination({ currentPage, itemsPerPage }),
     ].filter((error) => error);
 
     if (errors.length) throw createError(errors, 400);

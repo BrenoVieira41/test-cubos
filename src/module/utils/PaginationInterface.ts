@@ -3,6 +3,10 @@ export interface Pagination {
   currentPage?: number | string;
 }
 
+export interface Filters {
+  [key: string]: any;
+}
+
 export enum OrderEnum {
   asc = 'asc',
   desc = 'desc'
@@ -11,6 +15,5 @@ export enum OrderEnum {
 export interface PaginationComplement {
   itemsPerPage: number;
   currentPage: number;
-  totalPages: number;
   total: number;
 }
