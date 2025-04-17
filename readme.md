@@ -1,64 +1,131 @@
-https://git.cubos.io/cubos/desafios-tecnicos/pessoa-backend-pleno/-/blob/main/endpoints/endpoints.md?ref_type=heads
+## 🧑‍💼 Permissões de Conta Administradora
 
-uma conta de administrador... 
-    - vai poder ver todos os usuarios,
-        - com ou sem lsitagem
-        - visualizar algum em expecifico.
-    - poder ver todos os cartões, (getCards)
-        - com ou sem lsitagem
-        - visualizar algum em expecifico.
-    - pode ver todas as transações
-        - com ou sem lsitagem
-        - visualizar algum em expecifico.
+Uma conta de administrador possui os seguintes privilégios:
 
-- criação de usuario. [POST /people]
-    - name, (3 a 200 / string)
-    - document, (cpf, cnpj)
-    - password, (6 a 50 / string, 1 numero 1 letra maisucula, 1 minuscula, 1 simbolo)
+- Pode visualizar **todos os usuários**:
+  - Com ou sem paginação.
+  - Pode visualizar um usuário específico.
 
-- login. [POST /login]
-    - document,
-    - password,
+- Pode visualizar **todos os cartões** (`GET /cards`):
+  - Com ou sem paginação.
+  - Pode visualizar um cartão específico.
+
+- Pode visualizar **todas as transações**:
+  - Com ou sem paginação.
+  - Pode visualizar uma transação específica.
 
 ---
-- criar conta. [POST /accounts]
-    - branch, (3 / string)
-    - account, (9 XXXXXXX-X / string)
-    - userId
 
-- criar cartão. [POST /accounts/:accountId/cards]
-    - type, (physical, virtual)
-    - number, (16 / string)
-    - cvv, (3 / string)
-    - user_id,
+## 👤 Criação de Usuário
 
-- visualizar cartões. [GET /accounts/:accountId/cards] (administrador.)
-    - itemsPerPage: default 10,
-    - currentPage: pagina atual
-    - orderby (updatedAt) asc e desc
+**[POST /people]**
 
-- visualizar cartões. [GET /cards] (user.)
-    - itemsPerPage: default 10,
-    - currentPage: pagina atual (default 1)
-    - orderby (updatedAt) asc e desc
+Campos obrigatórios:
+- `name` – string, entre 3 e 200 caracteres.
+- `document` – CPF ou CNPJ válidos.
+- `password` – string entre 6 e 50 caracteres, contendo:
+  - pelo menos 1 número,
+  - 1 letra maiúscula,
+  - 1 letra minúscula,
+  - 1 símbolo.
 
-- adicionar ou remove fundos. [POST /accounts/:accountId/transactions]
-    - value (flooat)
-    - accountId (url)
-    - description (string)
-    - type (credit, debit) "credito aumenta, debito diminui"
+---
 
-- transação. [POST /accounts/:accountId/transactions/internal]
-    - receiverAccountId
-    - accountId (url)
-    - value (flooat)
-    - description (string)
+## 🔐 Login
 
-- lista de transações [GET /accounts/:accountId/transactions]
-    - type: (credit, debit)
-    - itemsPerPage: default 10,
-    - currentPage: pagina atual
-    - orderby (updatedAt) asc e desc
+**[POST /login]**
 
-- balance. (GET /accounts/:accountId/balance)
-tras o valor atual só...
+Campos obrigatórios:
+- `document`
+- `password`
+
+---
+
+## 🏦 Criar Conta
+
+**[POST /accounts]**
+
+Campos obrigatórios:
+- `branch` – string com exatamente 3 dígitos.
+- `account` – string no formato 9 dígitos (ex: `XXXXXXX-X`).
+- `userId` – ID do usuário.
+
+---
+
+## 💳 Criar Cartão
+
+**[POST /accounts/:accountId/cards]**
+
+Campos obrigatórios:
+- `type` – `physical` ou `virtual`.
+- `number` – string com 16 dígitos.
+- `cvv` – string com 3 dígitos.
+- `user_id` – ID do usuário.
+
+---
+
+## 📋 Visualizar Cartões (Administrador)
+
+**[GET /accounts/:accountId/cards]**
+
+Query params:
+- `itemsPerPage` – padrão: 10.
+- `currentPage` – página atual.
+- `orderBy` – ordenação por `updatedAt` (`asc` ou `desc`).
+
+---
+
+## 📋 Visualizar Cartões (Usuário)
+
+**[GET /cards]**
+
+Query params:
+- `itemsPerPage` – padrão: 10.
+- `currentPage` – página atual (padrão: 1).
+- `orderBy` – ordenação por `updatedAt` (`asc` ou `desc`).
+
+---
+
+## 💰 Adicionar ou Remover Fundos
+
+**[POST /accounts/:accountId/transactions]**
+
+Campos obrigatórios:
+- `value` – número (float).
+- `accountId` – passado pela URL.
+- `description` – string.
+- `type` – `credit` (aumenta o saldo) ou `debit` (diminui o saldo).
+
+---
+
+## 🔁 Transferência Interna
+
+**[POST /accounts/:accountId/transactions/internal]**
+
+Campos obrigatórios:
+- `receiverAccountId` – conta destino.
+- `accountId` – conta origem (via URL).
+- `value` – número (float).
+- `description` – string.
+
+---
+
+## 📄 Lista de Transações
+
+**[GET /accounts/:accountId/transactions]**
+
+Query params:
+- `type` – `credit` ou `debit`.
+- `itemsPerPage` – padrão: 10.
+- `currentPage` – página atual.
+- `orderBy` – ordenação por `updatedAt` (`asc` ou `desc`).
+
+---
+
+## 💼 Saldo
+
+**[GET /accounts/:accountId/balance]**
+
+Retorna o saldo atual da conta.
+
+---
