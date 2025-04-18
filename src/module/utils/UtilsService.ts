@@ -1,3 +1,5 @@
+import { PERMISSION_ERROR_MESSAGE } from '../User/UserConstants';
+import { UserRoleEnum } from '../User/UserEntity';
 import { Filters, Pagination, PaginationComplement } from './PaginationInterface';
 import { validate as uuidValidate, version as uuidVersion } from 'uuid';
 
@@ -49,6 +51,11 @@ function validatePagination(input: Pagination): void {
     throw createError(erros, 400);
   }
 }
+
+function validateUserIsAdmin(role: UserRoleEnum) {
+  if (role !== UserRoleEnum.admin) throw createError(PERMISSION_ERROR_MESSAGE, 403);
+}
+
 function setPagination(query: Pagination) {
   const { itemsPerPage, currentPage } = query;
 
@@ -77,6 +84,7 @@ export {
   cleanString,
   validateFields,
   validateIsNull,
+  validateUserIsAdmin,
   validatePagination,
   setPagination,
   paginate,

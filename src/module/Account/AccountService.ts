@@ -1,0 +1,59 @@
+import { CustomJwtPayload } from '../User/UserEntity';
+import { createError } from '../utils/UtilsService';
+import { ACCOUNT_AREADY_EXIST, USER_INVALID } from './AccountConstants';
+import { Accounts } from './AccountEntity';
+import AccountRepository from './AccountRepository';
+import AccountValidate from './AccountValdiate';
+import { CreateAccountInput } from './dto/create-account.input';
+import { GetAccountInput } from './dto/get-account.input';
+
+class AccountService {
+  private readonly accountRepository: AccountRepository;
+  private readonly accountValidate: AccountValidate;
+
+  constructor() {
+    this.accountRepository = new AccountRepository();
+    this.accountValidate = new AccountValidate();
+  }
+
+  public async create(data: CreateAccountInput, user: CustomJwtPayload): Promise<Accounts> {
+    this.accountValidate.validateCreateAccount(data);
+
+    try {
+      const { account } = data;
+
+      const accountAlreadyExist = await this.accountRepository.get({ account });
+
+      if (accountAlreadyExist) throw createError(ACCOUNT_AREADY_EXIST, 409);
+
+      const newAccount: Accounts | any = await this.accountRepository.create({
+        ...data,
+        userId: user.id,
+      });
+
+      return newAccount;
+    } catch (error: any) {
+      const status = error.status ? error.status : 500;
+      throw createError(error.message, status);
+    }
+  }
+
+  public async get(data: GetAccountInput, user: CustomJwtPayload): Promise<Accounts> {
+    this.accountValidate.validateGetAccount(data);
+
+    const { id } = user;
+
+    try {
+      const account = await this.accountRepository.get({ id: data.id, account: data.account });
+
+      if (!account || account.userId !== id) throw createError(USER_INVALID, 409);
+
+      return account;
+    } catch (error: any) {
+      const status = error.status ? error.status : 500;
+      throw createError(error.message, status);
+    }
+  }
+}
+
+export default new AccountService();

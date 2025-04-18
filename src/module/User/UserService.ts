@@ -1,4 +1,4 @@
-import { cleanString, createError, paginate, setPagination } from '../utils/UtilsService';
+import { cleanString, createError, paginate, setPagination, validateUserIsAdmin } from '../utils/UtilsService';
 import { CreateUserInput } from './dto/create-user.input';
 import { LoginInput } from './dto/login-user.input';
 import { LOGIN_MESSAGE_ERROR, PERMISSION_ERROR_MESSAGE, USER_AREADY_EXIST } from './UserConstants';
@@ -93,7 +93,7 @@ class UserService {
     const { role } = user;
     this.userValidate.validateOrder(query);
 
-    if (role !== UserRoleEnum.admin) throw createError(PERMISSION_ERROR_MESSAGE, 403);
+    validateUserIsAdmin(role);
 
     let { currentPage, itemsPerPage, ...filtersOnly } = query;
     const where: Record<string, any> = {};
