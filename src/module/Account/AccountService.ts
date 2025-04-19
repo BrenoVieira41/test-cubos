@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { CustomJwtPayload } from '../User/UserEntity';
 import { USER_INVALID } from '../utils/UtilsConstants';
 import { createError } from '../utils/UtilsService';
@@ -71,10 +72,10 @@ class AccountService {
 
   public async getBalance(id: string, userId?: string): Promise<Accounts> {
     try {
-      const where: any = { id };
+      const where: Prisma.AccountsWhereInput = { id };
       if (userId) where.userId = userId;
 
-      const account = await this.accountRepository.getBalance({ where });
+      const account = await this.accountRepository.getBalance(where);
 
       return account;
     } catch (error: any) {

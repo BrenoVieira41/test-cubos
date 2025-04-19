@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import prisma from '../../prisma';
 import { PRISMA_ERROR } from '../Utils/ErrorInterface';
 import { Accounts } from './AccountEntity';
@@ -44,9 +45,9 @@ class AccountRepository {
     }
   }
 
-  async getBalance(where: any): Promise<Accounts | any> {
+  async getBalance(query: Prisma.AccountsWhereInput): Promise<Accounts | any> {
     try {
-      const account = await prisma.accounts.findUnique({ ...where });
+      const account = await prisma.accounts.findFirst({ where: query });
       return account;
     } catch (error: any) {
       console.error('Prisma error:', error);
