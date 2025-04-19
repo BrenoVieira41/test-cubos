@@ -31,7 +31,7 @@ model Users {
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 
-  Accounts Accounts?
+  accounts  Accounts[]
 
   @@map("users")
 }
@@ -40,12 +40,12 @@ model Accounts {
   id        String   @id @default(uuid())
   branch    String
   account   String   @unique
-  userId    String   @unique @map("userId")
+  userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   users        Users          @relation(fields: [userId], references: [id])
-  Cards        Cards?
+  cards        Cards[]
   transactions Transactions[]
   received     Transactions[] @relation("ReceivedTransactions")
 
@@ -57,11 +57,11 @@ model Cards {
   type      CardTypeEnum
   number    String
   cvv       String
-  accountId String       @unique @map("accountId")
+  accountId String
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 
-  accounts Accounts @relation(fields: [accountId], references: [id])
+  account Accounts @relation(fields: [accountId], references: [id])
 
   @@map("cards")
 }

@@ -1,6 +1,6 @@
 import { Users } from '../User/UserEntity';
-// import { Transactions } from '../Transaction/';
-// import { Cards } from '../Card/';
+import { Cards } from '../Card/CardEntity';
+import { Transactions } from '../Transaction/TransactionEntity';
 
 export class Accounts {
   id: string;
@@ -11,7 +11,7 @@ export class Accounts {
   updatedAt: Date;
 
   users: Users;
-  // Cards?: Cards;
-  // transactions: Transactions[];
-  // received: Transactions[];
+  Cards?: Cards[];
+  transactions: Transactions[];
+  received: Transactions[];
 }

@@ -21,6 +21,19 @@ class AccountRepository {
     }
   }
 
+  async list(userId: string): Promise<Accounts[] | any> {
+
+    try {
+      const accounts = await prisma.accounts.findMany({
+        where: { userId },
+      });
+      return accounts;
+    } catch (error) {
+      console.error('Prisma error:', error);
+      throw new Error(PRISMA_ERROR);
+    }
+  }
+
   async create(data: CreateAccountInput): Promise<Accounts | any> {
     try {
       const account = await prisma.accounts.create({ data });

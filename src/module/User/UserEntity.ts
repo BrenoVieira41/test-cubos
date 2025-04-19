@@ -1,4 +1,5 @@
 import { JwtPayload } from 'jsonwebtoken';
+import { Accounts } from '../Account/AccountEntity';
 
 export enum UserRoleEnum {
   admin = 'admin',
@@ -13,11 +14,13 @@ export class Users {
   role: UserRoleEnum;
   createdAt: Date;
   updatedAt: Date;
+
+  accounts?: Accounts[];
 }
 
 export interface CustomJwtPayload extends JwtPayload {
   id: string;
   name: string;
   document: string;
-  role: UserRoleEnum
+  role: UserRoleEnum;
 }

@@ -14,10 +14,10 @@ import {
   PASSWORD_ERROR_MESSAGE,
   ROLE_ERROR_MESSAGE,
   USER_AREADY_EXIST,
-  VALUE_NOT_FOUND,
 } from '../UserConstants';
 import * as argon2 from 'argon2';
 import mockUserRepository from './moc';
+import { VALUE_NOT_FOUND } from '../../utils/UtilsConstants';
 
 let userService: typeof UserService;
 

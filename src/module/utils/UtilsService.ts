@@ -1,6 +1,6 @@
 import { PERMISSION_ERROR_MESSAGE } from '../User/UserConstants';
 import { UserRoleEnum } from '../User/UserEntity';
-import { Filters, Pagination, PaginationComplement } from './PaginationInterface';
+import { Pagination, PaginationComplement } from './PaginationInterface';
 import { validate as uuidValidate, version as uuidVersion } from 'uuid';
 
 function isUUID(uuid: string): boolean {
@@ -10,6 +10,10 @@ function isUUID(uuid: string): boolean {
 function isNumeric(value: number | string): boolean {
   const numValue = Number(value);
   return !isNaN(numValue) && isFinite(numValue);
+}
+
+function idValidate(id: string) {
+  if (!isUUID(id)) return 'Id inválido.';
 }
 
 function createError(messages: string | string[], status?: number): Error {
@@ -33,7 +37,7 @@ function validateIsNull(data: Object): boolean {
   return false;
 }
 
-function validatePagination(input: Pagination): void {
+function validatePagination(input: Pagination): void | string {
   const erros: string[] = [];
   const { itemsPerPage, currentPage, ...rest } = input;
 
@@ -80,6 +84,7 @@ function paginate(itemsPerPage: number, currentPage: number, total: number): Pag
 
 export {
   isUUID,
+  idValidate,
   createError,
   cleanString,
   validateFields,

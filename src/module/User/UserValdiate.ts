@@ -1,4 +1,11 @@
-import { cleanString, createError, isUUID, validateFields, validateIsNull, validatePagination } from '../utils/UtilsService';
+import { VALUE_NOT_FOUND } from '../utils/UtilsConstants';
+import {
+  cleanString,
+  createError,
+  validateFields,
+  validateIsNull,
+  validatePagination,
+} from '../utils/UtilsService';
 import { CreateUserInput } from './dto/create-user.input';
 import { UsersPagination } from './dto/get-user.input';
 import { LoginInput } from './dto/login-user.input';
@@ -6,21 +13,15 @@ import {
   CNPJ_ERROR_MESSAGE,
   CPF_ERROR_MESSAGE,
   DOCUMENT_ERROR_MESSAGE,
-  ID_ERROR_MESSAGE,
   NAME_ERROR_MESSAGE,
   PASSWORD_ERROR_MESSAGE,
   ROLE_ERROR_MESSAGE,
-  VALUE_NOT_FOUND,
 } from './UserConstants';
 import { UserRoleEnum } from './UserEntity';
 
 class UserValidate {
   private nameValidate(name: string): string | void {
     if (!name || name.trim().length < 3 || name.length > 200) return NAME_ERROR_MESSAGE;
-  }
-
-  public idValidate(id: string): string | void {
-    if (!isUUID(id)) return ID_ERROR_MESSAGE;
   }
 
   public passwordValidate(password: string): string | void {
@@ -128,7 +129,7 @@ class UserValidate {
     if (errors.length) throw createError(errors, 400);
   }
 
-  public validateOrder(query: UsersPagination):void {
+  public validateOrder(query: UsersPagination): void {
     const { name, document, currentPage, itemsPerPage, ...rest } = query;
 
     validateFields(rest);

@@ -1,4 +1,4 @@
-import { cleanString, createError, paginate, setPagination, validateUserIsAdmin } from '../utils/UtilsService';
+import { cleanString, createError, paginate, setPagination, validateUserIsAdmin, idValidate } from '../utils/UtilsService';
 import { CreateUserInput } from './dto/create-user.input';
 import { LoginInput } from './dto/login-user.input';
 import { LOGIN_MESSAGE_ERROR, PERMISSION_ERROR_MESSAGE, USER_AREADY_EXIST } from './UserConstants';
@@ -8,6 +8,7 @@ import UserValidate from './UserValdiate';
 import { sign } from 'jsonwebtoken';
 import { hash, verify } from 'argon2';
 import { UsersPagination } from './dto/get-user.input';
+import { USER_INVALID } from '../utils/UtilsConstants';
 
 class UserService {
   private readonly userRepository: UserRepository;
@@ -70,10 +71,10 @@ class UserService {
   }
 
   public async get(id: string, user: CustomJwtPayload): Promise<Users> {
-    const idValidate = this.userValidate.idValidate(id);
+    const idIsValid = idValidate(id);
     const { role } = user;
 
-    if (idValidate) throw createError(idValidate, 400);
+    if (idValidate) throw createError(idIsValid, 400);
     const isAdmin = role === UserRoleEnum.admin;
     const isOwner = user.id === id;
 
@@ -129,6 +130,13 @@ class UserService {
     Reflect.deleteProperty(data, 'password');
 
     return data;
+  }
+
+  public async validateUserAccounts(accountId: string, id: string) {
+    const userAccount = await this.userRepository.userAccount(id);
+    const userAccountsId: string[] = userAccount.accounts.map(it => it.id);
+
+    if (!userAccountsId.includes(accountId)) throw createError(USER_INVALID, 409);
   }
 }
 

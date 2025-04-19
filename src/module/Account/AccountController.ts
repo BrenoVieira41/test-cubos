@@ -24,6 +24,16 @@ class AccountController {
       return res.status(500).json({ message: error.message.split('\n') });
     }
   }
+
+  async list(req: Request, res: Response): Promise<Response> {
+    try {
+      const user = req.user;
+      const account = await AccountService.list(user);
+      return res.status(200).json(account);
+    } catch (error: any) {
+      return res.status(500).json({ message: error.message.split('\n') });
+    }
+  }
 }
 
 export default new AccountController();

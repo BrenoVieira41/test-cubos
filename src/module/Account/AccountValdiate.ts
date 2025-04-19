@@ -1,17 +1,13 @@
-import { createError, isUUID, validateFields, validateIsNull } from '../utils/UtilsService';
+import { VALUE_NOT_FOUND } from '../utils/UtilsConstants';
+import { createError, idValidate, validateFields, validateIsNull } from '../utils/UtilsService';
 import {
   ACCOUNT_ERROR_MESSAGE,
   BRANCH_ERROR_MESSAGE,
-  ID_ERROR_MESSAGE,
-  VALUE_NOT_FOUND,
 } from './AccountConstants';
 import { CreateAccountInput } from './dto/create-account.input';
 import { GetAccountInput } from './dto/get-account.input';
 
 class AccountValidate {
-  public idValidate(id: string): string | void {
-    if (!isUUID(id)) return ID_ERROR_MESSAGE;
-  }
 
   private branchValdiate(branch: string): string | void {
     const branchRegex = RegExp(/^\d{3}$/);
@@ -45,7 +41,7 @@ class AccountValidate {
     validateFields(rest);
 
     const errors: string[] | any = [
-      id ? this.idValidate(id) : null,
+      id ? idValidate(id) : null,
       account ? this.accountValdiate(account) : null,
     ].filter((error) => error);
 

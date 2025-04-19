@@ -10,7 +10,30 @@ class UserRepository {
     try {
       const user = await prisma.users.findFirst({
         where: {
-          OR: [{ id }, {document}]
+          OR: [{ id }, { document }],
+        },
+      });
+      return user;
+    } catch (error) {
+      console.error('Prisma error:', error);
+      throw new Error(PRISMA_ERROR);
+    }
+  }
+
+  async userAccount(id: string): Promise<Users | any> {
+    try {
+      const user = await prisma.users.findFirst({
+        where: { id },
+        select: {
+          id: true,
+          name: true,
+          document: true,
+          role: true,
+          accounts: {
+            select: {
+              id: true,
+            },
+          },
         },
       });
       return user;
@@ -44,7 +67,7 @@ class UserRepository {
           createdAt: true,
           updatedAt: true,
         },
-        orderBy: { createdAt: 'desc' }
+        orderBy: { createdAt: 'desc' },
       });
 
       return users;

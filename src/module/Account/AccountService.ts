@@ -1,6 +1,7 @@
 import { CustomJwtPayload } from '../User/UserEntity';
+import { USER_INVALID } from '../utils/UtilsConstants';
 import { createError } from '../utils/UtilsService';
-import { ACCOUNT_AREADY_EXIST, USER_INVALID } from './AccountConstants';
+import { ACCOUNT_AREADY_EXIST } from './AccountConstants';
 import { Accounts } from './AccountEntity';
 import AccountRepository from './AccountRepository';
 import AccountValidate from './AccountValdiate';
@@ -47,6 +48,18 @@ class AccountService {
       const account = await this.accountRepository.get({ id: data.id, account: data.account });
 
       if (!account || account.userId !== id) throw createError(USER_INVALID, 409);
+
+      return account;
+    } catch (error: any) {
+      const status = error.status ? error.status : 500;
+      throw createError(error.message, status);
+    }
+  }
+
+  public async list(user: CustomJwtPayload): Promise<Accounts[]> {
+    try {
+      const { id } = user;
+      const account = await this.accountRepository.list(id);
 
       return account;
     } catch (error: any) {
