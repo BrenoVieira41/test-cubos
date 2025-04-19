@@ -30,6 +30,7 @@ class AccountService {
       const newAccount: Accounts | any = await this.accountRepository.create({
         ...data,
         userId: user.id,
+        balance: 0,
       });
 
       return newAccount;
@@ -60,6 +61,20 @@ class AccountService {
     try {
       const { id } = user;
       const account = await this.accountRepository.list(id);
+
+      return account;
+    } catch (error: any) {
+      const status = error.status ? error.status : 500;
+      throw createError(error.message, status);
+    }
+  }
+
+  public async getBalance(id: string, userId?: string): Promise<Accounts> {
+    try {
+      const where: any = { id };
+      if (userId) where.userId = userId;
+
+      const account = await this.accountRepository.getBalance({ where });
 
       return account;
     } catch (error: any) {

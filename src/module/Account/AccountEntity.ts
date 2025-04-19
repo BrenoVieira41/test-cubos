@@ -7,10 +7,11 @@ export class Accounts {
   branch: string;
   account: string;
   userId: string;
+  balance: number;
   createdAt: Date;
   updatedAt: Date;
 
-  users: Users;
+  user: Users;
   Cards?: Cards[];
   transactions: Transactions[];
   received: Transactions[];

@@ -31,7 +31,7 @@ model Users {
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 
-  accounts  Accounts[]
+  accounts Accounts[]
 
   @@map("users")
 }
@@ -41,10 +41,11 @@ model Accounts {
   branch    String
   account   String   @unique
   userId    String
+  balance   Decimal  @default(0.0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users        Users          @relation(fields: [userId], references: [id])
+  user         Users          @relation(fields: [userId], references: [id])
   cards        Cards[]
   transactions Transactions[]
   received     Transactions[] @relation("ReceivedTransactions")
@@ -75,6 +76,8 @@ model Transactions {
   receiverAccountId String?
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
+  reversedAt        DateTime?
+  reversalReason    String?
 
   accounts         Accounts  @relation(fields: [accountId], references: [id])
   receiverAccounts Accounts? @relation("ReceivedTransactions", fields: [receiverAccountId], references: [id])

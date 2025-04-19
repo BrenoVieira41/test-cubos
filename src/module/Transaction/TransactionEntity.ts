@@ -11,10 +11,12 @@ export class Transactions {
   description: string;
   type: TransactionTypeEnum;
   accountId: string;
-  receiverAccountId?: string | null;
+  receiverAccountId?: string;
+  reversalReason?: string;
   createdAt: Date;
   updatedAt: Date;
+  reversedAt?: Date;
 
   accounts: Accounts;
-  receiverAccounts?: Accounts | null;
+  receiverAccounts?: Accounts;
 }

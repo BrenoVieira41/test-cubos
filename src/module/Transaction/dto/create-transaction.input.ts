@@ -1,9 +1,9 @@
 import { TransactionTypeEnum } from '../TransactionEntity';
 
-export class CreateCardInput {
-  value: string;
+export class CreateTransactionInput {
+  value: number;
   description: string;
   type: TransactionTypeEnum;
-  accountId: string;
-  receiverAccountId: string;
+  accountId?: string;
+  receiverAccountId?: string;
 }

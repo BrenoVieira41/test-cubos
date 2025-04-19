@@ -1,4 +1,4 @@
-const NAME_ERROR_MESSAGE = 'Nome inválido, esperado entre 3 a 200 caracteres..';
+const NAME_ERROR_MESSAGE = 'Nome inválido, esperado entre 3 a 200 caracteres...';
 const PASSWORD_ERROR_MESSAGE =
   'Senha invalida, esperado 6 caracteres, sendo eles 1 número, 1 letra maiúscula, 1 letra minuscula e 1 símbolo.';
 const ROLE_ERROR_MESSAGE = 'Cargo inválido.';

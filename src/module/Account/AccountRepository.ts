@@ -43,6 +43,17 @@ class AccountRepository {
       throw new Error(PRISMA_ERROR);
     }
   }
+
+  async getBalance(where: any): Promise<Accounts | any> {
+    try {
+      const account = await prisma.accounts.findUnique({ ...where });
+      return account;
+    } catch (error: any) {
+      console.error('Prisma error:', error);
+      throw new Error(PRISMA_ERROR);
+    }
+  }
+
 }
 
 export default AccountRepository;

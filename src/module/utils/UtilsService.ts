@@ -7,13 +7,23 @@ function isUUID(uuid: string): boolean {
   return uuidValidate(uuid) && uuidVersion(uuid) === 4;
 }
 
+function valueFormat(input: number | string): number {
+  return typeof input === 'string' ? parseFloat(input) : input;
+}
+
+function isFloat(value: number | string): boolean {
+  const numValue = Number(value);
+  return !isNaN(numValue) && isFinite(numValue) && numValue % 1 !== 0;
+}
+
 function isNumeric(value: number | string): boolean {
   const numValue = Number(value);
   return !isNaN(numValue) && isFinite(numValue);
 }
 
-function idValidate(id: string) {
-  if (!isUUID(id)) return 'Id inválido.';
+function idValidate(id: string, message?: string ) {
+  const errorMessage = message ? message : 'Id inválido.';
+  if (!isUUID(id)) return errorMessage;
 }
 
 function createError(messages: string | string[], status?: number): Error {
@@ -84,6 +94,8 @@ function paginate(itemsPerPage: number, currentPage: number, total: number): Pag
 
 export {
   isUUID,
+  valueFormat,
+  isFloat,
   idValidate,
   createError,
   cleanString,

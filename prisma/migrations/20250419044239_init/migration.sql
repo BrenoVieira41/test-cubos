@@ -26,6 +26,9 @@ CREATE TABLE "accounts" (
     "branch" TEXT NOT NULL,
     "account" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
+    "balance" DECIMAL(65,30) NOT NULL DEFAULT 0.0,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "accounts_pkey" PRIMARY KEY ("id")
 );
@@ -37,6 +40,8 @@ CREATE TABLE "cards" (
     "number" TEXT NOT NULL,
     "cvv" TEXT NOT NULL,
     "accountId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "cards_pkey" PRIMARY KEY ("id")
 );
@@ -49,6 +54,8 @@ CREATE TABLE "transactions" (
     "type" "TransactionTypeEnum" NOT NULL,
     "accountId" TEXT NOT NULL,
     "receiverAccountId" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "transactions_pkey" PRIMARY KEY ("id")
 );
@@ -57,10 +64,7 @@ CREATE TABLE "transactions" (
 CREATE UNIQUE INDEX "users_document_key" ON "users"("document");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "accounts_userId_key" ON "accounts"("userId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "cards_accountId_key" ON "cards"("accountId");
+CREATE UNIQUE INDEX "accounts_account_key" ON "accounts"("account");
 
 -- AddForeignKey
 ALTER TABLE "accounts" ADD CONSTRAINT "accounts_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

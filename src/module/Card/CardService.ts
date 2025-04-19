@@ -19,7 +19,7 @@ class CardService {
     this.cardValidate = new CardValidate();
   }
 
-  public async create(data: CreateCardInput, user: CustomJwtPayload): Promise<any> {
+  public async create(data: CreateCardInput, user: CustomJwtPayload): Promise<Cards> {
     this.cardValidate.validateCreateCard(data);
 
     try {

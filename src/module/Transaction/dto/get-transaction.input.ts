@@ -1,14 +1,7 @@
 import { Pagination } from '../../utils/PaginationInterface';
-
-export class GetTransactionInput {
-  id?: string;
-  type?: string;
-  accountId?: string;
-  receiverAccountId?: string;
-}
+import { TransactionTypeEnum } from '../TransactionEntity';
 
 export interface TransactionPagination extends Pagination {
-  type?: string;
+  type?: TransactionTypeEnum;
   accountId?: string;
-  receiverAccountId?: string;
 }
