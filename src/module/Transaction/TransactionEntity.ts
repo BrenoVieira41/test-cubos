@@ -1,4 +1,5 @@
 import { Accounts } from '../Account/AccountEntity';
+import { PaginationComplement } from '../utils/PaginationInterface';
 
 export enum TransactionTypeEnum {
   credit = 'credit',
@@ -19,4 +20,19 @@ export class Transactions {
 
   accounts: Accounts;
   receiverAccounts?: Accounts;
+}
+
+export interface TransactionCreateInterface {
+  id: string;
+  value: number;
+  description: string;
+  receiverAccountId?: string;
+  createdAt: string;
+  updatedAt: string;
+  reversedAt?: Date;
+}
+
+export interface TransactionOrderInterface {
+  transactions: Transactions[],
+  pagination: PaginationComplement;
 }

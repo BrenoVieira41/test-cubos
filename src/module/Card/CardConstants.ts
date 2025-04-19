@@ -1,4 +1,4 @@
-const TYPE_ERROR_MESSAGE = 'Tipo de cartão inválido, esperado entre fisico ou virtual.';
+const TYPE_ERROR_MESSAGE = 'Tipo de cartão inválido. Esperado: físico ou virtual.';
 const NUMBER_ERROR_MESSAGE = 'Número de conta inválido, esperado no formato (XXXX XXXX XXXX XXXX)';
 const CVV_ERROR_MESSAGE = 'CVV inválido, esperado 3 números.';
 

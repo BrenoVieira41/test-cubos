@@ -1,10 +1,10 @@
-const TYPE_ERROR_MESSAGE = 'Tipo de transferencia inválida, esperado entre crédito e débito.';
+const TYPE_ERROR_MESSAGE = 'Tipo de transferência inválido. Esperado: crédito ou débito.';
 const DESCRIPTION_ERROR_MESSAGE = ', esperado entre 3 a 200 caracteres...';
 const VALUE_ERROR_MESSAGE = 'Valor inválido, esperado um float.';
 const ACCOUNT_ERROR_MESSAGE = 'Conta base inválida.';
 const RECEIVER_ERROR_MESSAGE = 'Conta de recebimento inválida.';
 
-const TRANSACTION_NOT_FOUND = 'Essa transação não e sua ou não existe.';
+const TRANSACTION_NOT_FOUND = 'Essa transação não é sua ou não existe.';
 
 const INSUFFICIENT_BALANCE_MESSAGE = 'Não há saldo suficiente para realizar a transação.';
 const INSUFFICIENT_REVERT_BALANCE_MESSAGE = 'Não há saldo suficiente para realizar o estorno, entre em contato com o suporte.';

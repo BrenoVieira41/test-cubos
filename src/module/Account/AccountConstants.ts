@@ -1,10 +1,10 @@
-const BRANCH_ERROR_MESSAGE = 'Agência inválida, esperado 3 números.';
-const ACCOUNT_ERROR_MESSAGE = 'Conta inválida, esperado nesse formato (XXXXXXX-X).';
+const BRANCH_ERROR_MESSAGE = 'Agência inválida. Esperado exatamente 3 dígitos.';
+const ACCOUNT_ERROR_MESSAGE = 'Conta inválida. Esperado no formato XXXXXXX-X.';
 
-const ACCOUNT_AREADY_EXIST = 'Você ou algum parente já cadastrou essa conta.';
+const ACCOUNT_ALREADY_EXIST = 'Você ou alguém da sua família já cadastrou essa conta.';
 
 export {
   BRANCH_ERROR_MESSAGE,
   ACCOUNT_ERROR_MESSAGE,
-  ACCOUNT_AREADY_EXIST
+  ACCOUNT_ALREADY_EXIST
 };

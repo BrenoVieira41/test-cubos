@@ -1,5 +1,3 @@
-// order
-
 import AccountService from '../Account/AccountService';
 import { CustomJwtPayload } from '../User/UserEntity';
 import UserService from '../User/UserService';
@@ -15,7 +13,7 @@ import {
   REVERSAL_ALREADY_USED,
   TRANSACTION_NOT_FOUND,
 } from './TransactionConstants';
-import { Transactions, TransactionTypeEnum } from './TransactionEntity';
+import { TransactionCreateInterface, TransactionOrderInterface, Transactions, TransactionTypeEnum } from './TransactionEntity';
 import TransactionRepository from './TransactionRepository';
 import TransactionValidate from './TransactionValdiate';
 
@@ -31,7 +29,7 @@ class TransactionService {
   public async createTransaction(
     data: CreateTransactionInput,
     user: CustomJwtPayload
-  ): Promise<any> {
+  ): Promise<TransactionCreateInterface> {
     this.transactionValidate.validateTransaction(data, true);
 
     const { id } = user;
@@ -87,7 +85,7 @@ class TransactionService {
     }
   }
 
-  public async balance(accountId: string, user: CustomJwtPayload): Promise<Object> {
+  public async balance(accountId: string, user: CustomJwtPayload): Promise<{balance: number}> {
     idValidate(accountId);
 
     const { id } = user;
@@ -107,11 +105,11 @@ class TransactionService {
   public async createTransactionInternal(
     data: CreateTransactionInput,
     user: CustomJwtPayload
-  ): Promise<any> {
+  ): Promise<TransactionCreateInterface> {
     this.transactionValidate.validateTransaction(data, false);
 
     const { id } = user;
-    const { accountId, receiverAccountId } = data;
+    const { accountId } = data;
 
     const value = valueFormat(data.value);
     try {
@@ -142,7 +140,7 @@ class TransactionService {
   public async transactionReversal(
     data: ReverseTransactionInput,
     user: CustomJwtPayload
-  ): Promise<any> {
+  ): Promise<TransactionCreateInterface> {
     this.transactionValidate.validateTransactionReversal(data);
 
     const { id } = user;
@@ -200,7 +198,7 @@ class TransactionService {
     }
   }
 
-  public async order(query: TransactionPagination, user: CustomJwtPayload): Promise<any> {
+  public async order(query: TransactionPagination, user: CustomJwtPayload): Promise<TransactionOrderInterface> {
     this.transactionValidate.validateOrder(query);
 
     const { accountId, type } = query;
@@ -219,7 +217,7 @@ class TransactionService {
       const currentPage = Math.floor(skip / take) + 1;
 
       const transactions = await this.transactionRepository.order(where, skip, take);
-      const pagination = paginate(take, currentPage, transactions.length);
+      const pagination = paginate(take, currentPage);
 
       return { transactions, pagination };
     } catch (error: any) {

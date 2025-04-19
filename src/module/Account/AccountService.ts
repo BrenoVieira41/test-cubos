@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 import { CustomJwtPayload } from '../User/UserEntity';
 import { USER_INVALID } from '../utils/UtilsConstants';
 import { createError } from '../utils/UtilsService';
-import { ACCOUNT_AREADY_EXIST } from './AccountConstants';
+import { ACCOUNT_ALREADY_EXIST } from './AccountConstants';
 import { Accounts } from './AccountEntity';
 import AccountRepository from './AccountRepository';
 import AccountValidate from './AccountValdiate';
@@ -26,7 +26,7 @@ class AccountService {
 
       const accountAlreadyExist = await this.accountRepository.get({ account });
 
-      if (accountAlreadyExist) throw createError(ACCOUNT_AREADY_EXIST, 409);
+      if (accountAlreadyExist) throw createError(ACCOUNT_ALREADY_EXIST, 409);
 
       const newAccount: Accounts | any = await this.accountRepository.create({
         ...data,

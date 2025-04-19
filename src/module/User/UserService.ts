@@ -1,7 +1,7 @@
 import { cleanString, createError, paginate, setPagination, validateUserIsAdmin, idValidate } from '../utils/UtilsService';
 import { CreateUserInput } from './dto/create-user.input';
 import { LoginInput } from './dto/login-user.input';
-import { LOGIN_MESSAGE_ERROR, PERMISSION_ERROR_MESSAGE, USER_AREADY_EXIST } from './UserConstants';
+import { LOGIN_MESSAGE_ERROR, PERMISSION_ERROR_MESSAGE, USER_ALREADY_EXIST } from './UserConstants';
 import { CustomJwtPayload, UserLoginInterface, UserOrderInterface, UserRoleEnum, Users } from './UserEntity';
 import UserRepository from './UserRepository';
 import UserValidate from './UserValdiate';
@@ -29,7 +29,7 @@ class UserService {
 
       const userAlreadyExist = await this.userRepository.get({ document: cleanDocument });
 
-      if (userAlreadyExist) throw createError(USER_AREADY_EXIST, 409);
+      if (userAlreadyExist) throw createError(USER_ALREADY_EXIST, 409);
 
       const hashedPassword = await hash(password);
       const userRole = role ? role : UserRoleEnum.client;

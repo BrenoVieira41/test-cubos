@@ -1,4 +1,3 @@
-// criar transação (create, get, balance, order)
 import { Request, Response } from 'express';
 import { CustomError } from '../Utils/ErrorInterface';
 import TransactionService from './TransactionService';
