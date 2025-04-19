@@ -4,7 +4,7 @@ import UserService from '../User/UserService';
 import { Pagination } from '../utils/PaginationInterface';
 import { createError, paginate, setPagination } from '../utils/UtilsService';
 import { ALREADY_USED_PHYSICAL_CARD, CARD_ALREADY_EXIST, CARD_NOT_FOUND } from './CardConstants';
-import { Cards, CardTypeEnum } from './CardEntity';
+import { CardOrderInterface, Cards, CardTypeEnum } from './CardEntity';
 import CardRepository from './CardRepository';
 import CardValidate from './CardValdiate';
 import { CreateCardInput } from './dto/create-card.input';
@@ -92,19 +92,27 @@ class CardService {
     }
   }
 
-  public async order(query: Pagination, user: CustomJwtPayload): Promise<any> {
+  public async order(query: Pagination, user: CustomJwtPayload): Promise<CardOrderInterface> {
     this.cardValidate.validateOrder(query);
 
     try {
       const { skip, take } = setPagination(query);
 
       const userAccounts = await AccountService.list(user);
-      const accountsIds: string[] = userAccounts.map(it => it.id);
+      const accountsIds: string[] = userAccounts.map((it) => it.id);
 
       const currentPage = Math.floor(skip / take) + 1;
 
-      const cards = await this.cardRepository.order(accountsIds, skip, take);
-      const pagination = paginate(take, currentPage, cards.length);
+      let cards = await this.cardRepository.order(accountsIds, skip, take);
+
+      if (cards.length) {
+        cards = cards.map((card) => ({
+          ...card,
+          number: this.formatLastCardNumber(card.number),
+        }));
+      }
+
+      const pagination = paginate(take, currentPage);
 
       return { cards, pagination };
     } catch (error: any) {

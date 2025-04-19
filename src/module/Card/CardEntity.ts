@@ -1,4 +1,5 @@
 import { Accounts } from '../Account/AccountEntity';
+import { PaginationComplement } from '../utils/PaginationInterface';
 
 export enum CardTypeEnum {
   physical = 'physical',
@@ -15,4 +16,9 @@ export class Cards {
   updatedAt: Date;
 
   account: Accounts;
+}
+
+export interface CardOrderInterface {
+  cards: Cards[];
+  pagination: PaginationComplement;
 }

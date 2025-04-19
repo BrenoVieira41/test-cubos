@@ -81,14 +81,13 @@ function setPagination(query: Pagination) {
 }
 
 
-function paginate(itemsPerPage: number, currentPage: number, total: number): PaginationComplement {
+function paginate(itemsPerPage: number, currentPage: number): PaginationComplement {
   const pageSize = itemsPerPage > 0 ? itemsPerPage : 10;
   const page = currentPage > 0 ? currentPage : 1;
 
   return {
     currentPage: page,
     itemsPerPage: pageSize,
-    total,
   };
 }
 

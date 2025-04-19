@@ -15,5 +15,4 @@ export enum OrderEnum {
 export interface PaginationComplement {
   itemsPerPage: number;
   currentPage: number;
-  total: number;
 }

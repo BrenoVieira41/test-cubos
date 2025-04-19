@@ -117,7 +117,7 @@ class UserService {
       const users = await this.userRepository.order(where, skip, take);
 
       const currentPage = Math.floor(skip / take) + 1;
-      const pagination = paginate(take, currentPage, users.length);
+      const pagination = paginate(take, currentPage);
 
       return {users, pagination};
     } catch (error: any) {
