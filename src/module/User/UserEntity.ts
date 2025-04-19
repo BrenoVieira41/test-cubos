@@ -1,5 +1,6 @@
 import { JwtPayload } from 'jsonwebtoken';
 import { Accounts } from '../Account/AccountEntity';
+import { PaginationComplement } from '../utils/PaginationInterface';
 
 export enum UserRoleEnum {
   admin = 'admin',
@@ -23,4 +24,14 @@ export interface CustomJwtPayload extends JwtPayload {
   name: string;
   document: string;
   role: UserRoleEnum;
+}
+
+export interface UserLoginInterface {
+  user: Users,
+  token: string;
+}
+
+export interface UserOrderInterface {
+  users: Users[],
+  pagination: PaginationComplement;
 }

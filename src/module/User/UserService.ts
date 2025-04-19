@@ -2,7 +2,7 @@ import { cleanString, createError, paginate, setPagination, validateUserIsAdmin,
 import { CreateUserInput } from './dto/create-user.input';
 import { LoginInput } from './dto/login-user.input';
 import { LOGIN_MESSAGE_ERROR, PERMISSION_ERROR_MESSAGE, USER_AREADY_EXIST } from './UserConstants';
-import { CustomJwtPayload, UserRoleEnum, Users } from './UserEntity';
+import { CustomJwtPayload, UserLoginInterface, UserOrderInterface, UserRoleEnum, Users } from './UserEntity';
 import UserRepository from './UserRepository';
 import UserValidate from './UserValdiate';
 import { sign } from 'jsonwebtoken';
@@ -48,7 +48,7 @@ class UserService {
     }
   }
 
-  public async userLogin(data: LoginInput) {
+  public async userLogin(data: LoginInput): Promise<UserLoginInterface> {
     this.userValidate.validateUserLogin(data);
     try {
       const { document, password } = data;
@@ -90,7 +90,7 @@ class UserService {
     }
   }
 
-  public async order(query: UsersPagination, user: CustomJwtPayload): Promise<any> {
+  public async order(query: UsersPagination, user: CustomJwtPayload): Promise<UserOrderInterface> {
     const { role } = user;
     this.userValidate.validateOrder(query);
 
@@ -132,7 +132,7 @@ class UserService {
     return data;
   }
 
-  public async validateUserAccounts(accountId: string, id: string) {
+  public async validateUserAccounts(accountId: string, id: string): Promise<void> {
     const userAccount = await this.userRepository.userAccount(id);
     const userAccountsId: string[] = userAccount.accounts.map(it => it.id);
 
