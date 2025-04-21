@@ -76,8 +76,6 @@ Listei abaixo algumas ideias que pensei durante o desenvolvimento:
 - [ ] Adicionar paginação na listagem de transferências estornadas.
 - [ ] Incluir validações e permissões mais robustas para usuários administradores.
 - [ ] Documentar a API com Swagger para facilitar testes e leitura externa.
-- [ ] Separar melhor responsabilidades entre camadas (controller, service, repository).
-- [ ] Adicionar testes unitários e de integração com cobertura mínima.
 
 ---
 
