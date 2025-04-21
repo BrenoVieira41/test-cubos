@@ -2,6 +2,7 @@ import { PERMISSION_ERROR_MESSAGE } from '../User/UserConstants';
 import { UserRoleEnum } from '../User/UserEntity';
 import { Pagination, PaginationComplement } from './PaginationInterface';
 import { validate as uuidValidate, version as uuidVersion } from 'uuid';
+import { CURRENT_PAGE_ERROR_MESSAGE, ID_ERROR_MESSAGE, ITEMS_PER_PAGE_ERROR_MESSAGE } from './UtilsConstants';
 
 function isUUID(uuid: string): boolean {
   return uuidValidate(uuid) && uuidVersion(uuid) === 4;
@@ -22,7 +23,7 @@ function isNumeric(value: number | string): boolean {
 }
 
 function idValidate(id: string, message?: string ) {
-  const errorMessage = message ? message : 'Id inválido.';
+  const errorMessage = message ? message : ID_ERROR_MESSAGE;
   if (!isUUID(id)) return errorMessage;
 }
 
@@ -54,11 +55,11 @@ function validatePagination(input: Pagination): void | string {
   validateFields(rest);
 
   if (itemsPerPage && !isNumeric(itemsPerPage)) {
-    erros.push('Número de itens por página inválido. Deve ser um número inteiro positivo.');
+    erros.push(ITEMS_PER_PAGE_ERROR_MESSAGE);
   }
 
   if (currentPage && !isNumeric(currentPage)) {
-    erros.push('Página atual inválida. Deve ser um número inteiro maior ou igual a zero.');
+    erros.push(CURRENT_PAGE_ERROR_MESSAGE);
   }
 
   if (erros.length > 0) {

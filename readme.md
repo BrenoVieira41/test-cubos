@@ -1,131 +1,84 @@
-## 🧑‍💼 Permissões de Conta Administradora
-
-Uma conta de administrador possui os seguintes privilégios:
-
-- Pode visualizar **todos os usuários**:
-  - Com ou sem paginação.
-  - Pode visualizar um usuário específico.
-
-- Pode visualizar **todos os cartões** (`GET /cards`):
-  - Com ou sem paginação.
-  - Pode visualizar um cartão específico.
-
-- Pode visualizar **todas as transações**:
-  - Com ou sem paginação.
-  - Pode visualizar uma transação específica.
+<p align="center">
+  <b>Teste para empresa Cubos</b><br/>
+  <h4 align="center">Código desenvolvido como parte do processo seletivo da empresa Cubos.</h4>
+</p>
 
 ---
 
-## 👤 Criação de Usuário
+### 🛠 Tecnologias utilizadas
 
-**[POST /people]**
-
-Campos obrigatórios:
-- `name` – string, entre 3 e 200 caracteres.
-- `document` – CPF ou CNPJ válidos.
-- `password` – string entre 6 e 50 caracteres, contendo:
-  - pelo menos 1 número,
-  - 1 letra maiúscula,
-  - 1 letra minúscula,
-  - 1 símbolo.
+- [Node.js](https://nodejs.org/en/)
+- [Express](https://expressjs.com/pt-br/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Prisma](https://www.prisma.io/?via=start&gad_source=1)
 
 ---
 
-## 🔐 Login
+## 📣 Sobre o projeto
 
-**[POST /login]**
+Projeto backend para gerenciamento de contas, com suporte à criação de múltiplos cartões por conta e realização de transferências internas entre usuários.
 
-Campos obrigatórios:
-- `document`
-- `password`
-
----
-
-## 🏦 Criar Conta
-
-**[POST /accounts]**
-
-Campos obrigatórios:
-- `branch` – string com exatamente 3 dígitos.
-- `account` – string no formato 9 dígitos (ex: `XXXXXXX-X`).
-- `userId` – ID do usuário.
+Entre as funcionalidades estão:
+- Criação de contas
+- Criação de cartões (físico ou virtual)
+- Transferência entre usuários
+- Adição de saldo
+- Estorno de transações
 
 ---
 
-## 💳 Criar Cartão
+## 🚀 Como rodar o projeto
 
-**[POST /accounts/:accountId/cards]**
+### 💾 Clonando o repositório
 
-Campos obrigatórios:
-- `type` – `physical` ou `virtual`.
-- `number` – string com 16 dígitos.
-- `cvv` – string com 3 dígitos.
-- `user_id` – ID do usuário.
+```bash
+git clone https://github.com/BrenoVieira41/test-cubos.git
+cd test-cubos
+```
 
----
+### 🎁 Instalando as dependências
 
-## 📋 Visualizar Cartões (Administrador)
+```bash
+npm install
+```
 
-**[GET /accounts/:accountId/cards]**
+### 🧪 Rodando as migrations
 
-Query params:
-- `itemsPerPage` – padrão: 10.
-- `currentPage` – página atual.
-- `orderBy` – ordenação por `updatedAt` (`asc` ou `desc`).
+Antes de tudo, certifique-se de criar um arquivo `.env` com as configurações do seu banco de dados.
 
----
+```bash
+# Rodar as migrations
+npx prisma migrate dev
 
-## 📋 Visualizar Cartões (Usuário)
+# Opcional: visualizar o banco com Prisma Studio
+npx prisma studio
+```
 
-**[GET /cards]**
+### ▶️ Executando o projeto
 
-Query params:
-- `itemsPerPage` – padrão: 10.
-- `currentPage` – página atual (padrão: 1).
-- `orderBy` – ordenação por `updatedAt` (`asc` ou `desc`).
+```bash
+# Em ambiente de produção
+npm run build
+npm run start
 
----
-
-## 💰 Adicionar ou Remover Fundos
-
-**[POST /accounts/:accountId/transactions]**
-
-Campos obrigatórios:
-- `value` – número (float).
-- `accountId` – passado pela URL.
-- `description` – string.
-- `type` – `credit` (aumenta o saldo) ou `debit` (diminui o saldo).
+# Em ambiente de desenvolvimento
+npm run dev
+```
 
 ---
 
-## 🔁 Transferência Interna
+## 💡 Possíveis melhorias
 
-**[POST /accounts/:accountId/transactions/internal]**
+Listei abaixo algumas ideias que pensei durante o desenvolvimento:
 
-Campos obrigatórios:
-- `receiverAccountId` – conta destino.
-- `accountId` – conta origem (via URL).
-- `value` – número (float).
-- `description` – string.
-
----
-
-## 📄 Lista de Transações
-
-**[GET /accounts/:accountId/transactions]**
-
-Query params:
-- `type` – `credit` ou `debit`.
-- `itemsPerPage` – padrão: 10.
-- `currentPage` – página atual.
-- `orderBy` – ordenação por `updatedAt` (`asc` ou `desc`).
+- [ ] Implementar real-time ou mensageria para eventos de transferência.
+- [ ] Criar agendamento de pagamentos (scheduled payments).
+- [ ] Adicionar paginação na listagem de transferências estornadas.
+- [ ] Incluir validações e permissões mais robustas para usuários administradores.
+- [ ] Documentar a API com Swagger para facilitar testes e leitura externa.
+- [ ] Separar melhor responsabilidades entre camadas (controller, service, repository).
+- [ ] Adicionar testes unitários e de integração com cobertura mínima.
 
 ---
 
-## 💼 Saldo
-
-**[GET /accounts/:accountId/balance]**
-
-Retorna o saldo atual da conta.
-
----
+Se tiver sugestões ou quiser contribuir com feedback, sinta-se à vontade!

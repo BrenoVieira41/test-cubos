@@ -15,6 +15,7 @@ import {
   ACCOUNT_ERROR_MESSAGE,
   DESCRIPTION_ERROR_MESSAGE,
   RECEIVER_ERROR_MESSAGE,
+  TRANSACTION_ID_ERROR_MESSAGE,
   TYPE_ERROR_MESSAGE,
   VALUE_ERROR_MESSAGE,
 } from './TransactionConstants';
@@ -61,7 +62,7 @@ class TransactionValidate {
 
     const errors: string[] | any = [
       idValidate(accountId, ACCOUNT_ERROR_MESSAGE),
-      idValidate(transactionId),
+      idValidate(transactionId, TRANSACTION_ID_ERROR_MESSAGE),
       this.descriptionValidate(reversalReason, 'descrição de estorno inválido'),
     ].filter((error) => error);
 
@@ -73,15 +74,13 @@ class TransactionValidate {
 
     validateFields(rest);
 
-    const pagination = validatePagination({ currentPage, itemsPerPage });
-
     const errors: string[] | any = [
+      validatePagination({ currentPage, itemsPerPage }),
       idValidate(accountId, ACCOUNT_ERROR_MESSAGE),
       type ? this.typeValidate(type) : null,
     ].filter((error) => error);
 
     if (errors.length) throw createError(errors, 400);
-    if (pagination) throw createError(pagination, 400);
   }
 }
 

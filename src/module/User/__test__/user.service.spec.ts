@@ -13,7 +13,7 @@ import {
   NAME_ERROR_MESSAGE,
   PASSWORD_ERROR_MESSAGE,
   ROLE_ERROR_MESSAGE,
-  USER_AREADY_EXIST,
+  USER_ALREADY_EXIST,
 } from '../UserConstants';
 import * as argon2 from 'argon2';
 import mockUserRepository from './moc';
@@ -40,7 +40,7 @@ describe('user - create', () => {
     mockUserRepository.get.mockResolvedValueOnce({ id: '1' });
 
     await expect(userService.create({ ...base, document: '390.533.447-05' })).rejects.toThrow(
-      USER_AREADY_EXIST
+      USER_ALREADY_EXIST
     );
   });
 

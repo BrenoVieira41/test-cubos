@@ -12,7 +12,7 @@ class AccountRepository {
     try {
       const newAccount = await prisma.accounts.findFirst({
         where: {
-          OR: [{ id }, {account}]
+          OR: [{ id }, { account }],
         },
       });
       return newAccount;
@@ -22,8 +22,20 @@ class AccountRepository {
     }
   }
 
-  async list(userId: string): Promise<Accounts[] | any> {
+  async findAccountByUser(userId: string): Promise<Accounts[] | any> {
+    try {
+      const accounts = await prisma.accounts.findMany({
+        where: { userId },
+      });
 
+      return accounts;
+    } catch (error) {
+      console.error('Prisma error:', error);
+      throw new Error(PRISMA_ERROR);
+    }
+  }
+
+  async list(userId: string): Promise<Accounts[] | any> {
     try {
       const accounts = await prisma.accounts.findMany({
         where: { userId },
@@ -35,9 +47,11 @@ class AccountRepository {
     }
   }
 
-  async create(data: CreateAccountInput): Promise<Accounts | any> {
+  async create(data: CreateAccountInput, userId: string): Promise<Accounts | any> {
     try {
-      const account = await prisma.accounts.create({ data });
+      const account = await prisma.accounts.create({
+        data: { ...data, userId }
+      });
       return account;
     } catch (error: any) {
       console.error('Prisma error:', error);
@@ -54,7 +68,6 @@ class AccountRepository {
       throw new Error(PRISMA_ERROR);
     }
   }
-
 }
 
 export default AccountRepository;

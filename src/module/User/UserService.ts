@@ -1,8 +1,21 @@
-import { cleanString, createError, paginate, setPagination, validateUserIsAdmin, idValidate } from '../utils/UtilsService';
+import {
+  cleanString,
+  createError,
+  paginate,
+  setPagination,
+  validateUserIsAdmin,
+  idValidate,
+} from '../utils/UtilsService';
 import { CreateUserInput } from './dto/create-user.input';
 import { LoginInput } from './dto/login-user.input';
 import { LOGIN_MESSAGE_ERROR, PERMISSION_ERROR_MESSAGE, USER_ALREADY_EXIST } from './UserConstants';
-import { CustomJwtPayload, UserLoginInterface, UserOrderInterface, UserRoleEnum, Users } from './UserEntity';
+import {
+  CustomJwtPayload,
+  UserLoginInterface,
+  UserOrderInterface,
+  UserRoleEnum,
+  Users,
+} from './UserEntity';
 import UserRepository from './UserRepository';
 import UserValidate from './UserValdiate';
 import { sign } from 'jsonwebtoken';
@@ -52,8 +65,11 @@ class UserService {
     this.userValidate.validateUserLogin(data);
     try {
       const { document, password } = data;
+
+      const cleanDocument = cleanString(document);
+
       const secret = process.env.JWT_SECRET || 'secret';
-      const user = await this.userRepository.get({ document });
+      const user = await this.userRepository.get({ document: cleanDocument });
 
       if (!user) throw createError(LOGIN_MESSAGE_ERROR, 401);
       const isValidPassword = await verify(user.password, password);
@@ -74,7 +90,8 @@ class UserService {
     const idIsValid = idValidate(id);
     const { role } = user;
 
-    if (idValidate) throw createError(idIsValid, 400);
+    if (idIsValid) throw createError(idIsValid, 400);
+
     const isAdmin = role === UserRoleEnum.admin;
     const isOwner = user.id === id;
 
@@ -82,6 +99,7 @@ class UserService {
 
     try {
       const user = await this.userRepository.get({ id });
+
 
       return this.userResponse(user);
     } catch (error: any) {
@@ -104,8 +122,7 @@ class UserService {
 
       if (key === 'name') {
         where[key] = { contains: value.trim(), mode: 'insensitive' };
-      }
-      else if (key === 'document') {
+      } else if (key === 'document') {
         const cleanDocument = cleanString(value);
         where[key] = { equals: cleanDocument };
       }
@@ -119,7 +136,7 @@ class UserService {
       const currentPage = Math.floor(skip / take) + 1;
       const pagination = paginate(take, currentPage);
 
-      return {users, pagination};
+      return { users, pagination };
     } catch (error: any) {
       const status = error.status ? error.status : 500;
       throw createError(error.message, status);
@@ -130,13 +147,6 @@ class UserService {
     Reflect.deleteProperty(data, 'password');
 
     return data;
-  }
-
-  public async validateUserAccounts(accountId: string, id: string): Promise<void> {
-    const userAccount = await this.userRepository.userAccount(id);
-    const userAccountsId: string[] = userAccount.accounts.map(it => it.id);
-
-    if (!userAccountsId.includes(accountId)) throw createError(USER_INVALID, 409);
   }
 }
 

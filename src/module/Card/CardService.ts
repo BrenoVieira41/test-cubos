@@ -8,7 +8,7 @@ import { CardOrderInterface, Cards, CardTypeEnum } from './CardEntity';
 import CardRepository from './CardRepository';
 import CardValidate from './CardValdiate';
 import { CreateCardInput } from './dto/create-card.input';
-import { GetCardInput } from './dto/get-card.input';
+import { GetCardInput, TransactionPagination } from './dto/get-card.input';
 
 class CardService {
   private readonly cardRepository: CardRepository;
@@ -27,7 +27,7 @@ class CardService {
       const { type, number, accountId } = data;
 
       const formatedCardNumber = this.formatCardNumber(number);
-      await UserService.validateUserAccounts(accountId, id);
+      await AccountService.validateUserAccounts(accountId, id);
 
       const cardAlreadyExist = await this.cardRepository.cardAlreadyExist({
         ...data,
@@ -59,7 +59,7 @@ class CardService {
     try {
       const { id } = user;
 
-      await UserService.validateUserAccounts(accountId, id);
+      await AccountService.validateUserAccounts(accountId, id);
 
       const cards = await this.cardRepository.list(accountId);
 
@@ -83,7 +83,7 @@ class CardService {
 
       if (!card) throw createError(CARD_NOT_FOUND, 409);
 
-      await UserService.validateUserAccounts(card.accountId, id);
+      await AccountService.validateUserAccounts(card.accountId, id);
 
       return card;
     } catch (error: any) {
@@ -92,18 +92,23 @@ class CardService {
     }
   }
 
-  public async order(query: Pagination, user: CustomJwtPayload): Promise<CardOrderInterface> {
+  public async order(query: TransactionPagination, user: CustomJwtPayload): Promise<CardOrderInterface> {
     this.cardValidate.validateOrder(query);
 
     try {
+      const { type } = query;
       const { skip, take } = setPagination(query);
 
       const userAccounts = await AccountService.list(user);
-      const accountsIds: string[] = userAccounts.map((it) => it.id);
+      const accountsIds: string[] = userAccounts.map((it) => it.id) ?? [];
 
       const currentPage = Math.floor(skip / take) + 1;
 
-      let cards = await this.cardRepository.order(accountsIds, skip, take);
+      const where: any = { accountId: { in: accountsIds } }
+
+      if (type) where.type = type;
+
+      let cards = await this.cardRepository.order(where, skip, take);
 
       if (cards.length) {
         cards = cards.map((card) => ({
@@ -127,7 +132,7 @@ class CardService {
     return cleaned.replace(/(\d{4})(?=\d)/g, '$1 ').trim();
   }
 
-  private formatLastCardNumber(input: string): string {
+  public formatLastCardNumber(input: string): string {
     const numberSplited = input.split(' ');
 
     return numberSplited[3];

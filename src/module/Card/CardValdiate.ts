@@ -5,11 +5,10 @@ import {
   validateIsNull,
   validatePagination,
 } from '../utils/UtilsService';
-import { CVV_ERROR_MESSAGE, NUMBER_ERROR_MESSAGE, TYPE_ERROR_MESSAGE } from './CardConstants';
+import { ACCOUNT_ID_ERROR_MESSAGE, CVV_ERROR_MESSAGE, NUMBER_ERROR_MESSAGE, TYPE_ERROR_MESSAGE } from './CardConstants';
 import { CardTypeEnum } from './CardEntity';
 import { CreateCardInput } from './dto/create-card.input';
-import { GetCardInput } from './dto/get-card.input';
-import { Pagination } from '../utils/PaginationInterface';
+import { GetCardInput, TransactionPagination } from './dto/get-card.input';
 import { VALUE_NOT_FOUND } from '../utils/UtilsConstants';
 
 
@@ -40,7 +39,7 @@ class CardValidate {
 
     const errors: string[] | any = [
       this.typeValidate(type),
-      idValidate(accountId),
+      idValidate(accountId, ACCOUNT_ID_ERROR_MESSAGE),
       this.cvvValidate(cvv),
       this.validateCardNumber(number),
     ].filter((error) => error);
@@ -57,20 +56,23 @@ class CardValidate {
     const errors: string[] | any = [
       id ? idValidate(id) : null,
       number ? this.validateCardNumber(number) : null,
-      accountId ? idValidate(accountId) : null,
+      accountId ? idValidate(accountId, ACCOUNT_ID_ERROR_MESSAGE) : null,
     ].filter((error) => error);
 
     if (errors.length) throw createError(errors, 400);
   }
 
-  public validateOrder(query: Pagination): void {
-    const { currentPage, itemsPerPage, ...rest } = query;
+  public validateOrder(query: TransactionPagination): void {
+    const { type, currentPage, itemsPerPage, ...rest } = query;
 
     validateFields(rest);
 
-    const pagination = validatePagination({ currentPage, itemsPerPage });
+    const errors: string[] | any = [
+      validatePagination({ currentPage, itemsPerPage }),
+      type ? this.typeValidate(type) : null,
+    ].filter((error) => error);
 
-    if (pagination) throw createError(pagination, 400);
+    if (errors.length) throw createError(errors, 400);
   }
 }
 

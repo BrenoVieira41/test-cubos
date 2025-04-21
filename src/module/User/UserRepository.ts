@@ -20,29 +20,6 @@ class UserRepository {
     }
   }
 
-  async userAccount(id: string): Promise<Users | any> {
-    try {
-      const user = await prisma.users.findFirst({
-        where: { id },
-        select: {
-          id: true,
-          name: true,
-          document: true,
-          role: true,
-          accounts: {
-            select: {
-              id: true,
-            },
-          },
-        },
-      });
-      return user;
-    } catch (error) {
-      console.error('Prisma error:', error);
-      throw new Error(PRISMA_ERROR);
-    }
-  }
-
   async create(data: CreateUserInput): Promise<Users | any> {
     try {
       const user = await prisma.users.create({ data });

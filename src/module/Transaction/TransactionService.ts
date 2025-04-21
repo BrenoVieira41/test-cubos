@@ -2,18 +2,31 @@ import AccountService from '../Account/AccountService';
 import { CustomJwtPayload } from '../User/UserEntity';
 import UserService from '../User/UserService';
 import { USER_INVALID } from '../utils/UtilsConstants';
-import { createError, idValidate, paginate, setPagination, valueFormat } from '../utils/UtilsService';
+import {
+  createError,
+  idValidate,
+  paginate,
+  setPagination,
+  valueFormat,
+} from '../utils/UtilsService';
 import { CreateTransactionInput } from './dto/create-transaction.input';
 import { TransactionPagination } from './dto/get-transaction.input';
 import { ReverseTransactionInput } from './dto/reverte-transaction.input';
 import {
+  ACCOUNT_ERROR_MESSAGE,
   INSUFFICIENT_BALANCE_MESSAGE,
   INSUFFICIENT_REVERT_BALANCE_MESSAGE,
   ONLY_INTERNAL_MESSAGE_ERROR,
   REVERSAL_ALREADY_USED,
   TRANSACTION_NOT_FOUND,
+  TRANSFER_TO_SAME_ACCOUNT_ERROR,
 } from './TransactionConstants';
-import { TransactionCreateInterface, TransactionOrderInterface, Transactions, TransactionTypeEnum } from './TransactionEntity';
+import {
+  TransactionCreateInterface,
+  TransactionOrderInterface,
+  Transactions,
+  TransactionTypeEnum,
+} from './TransactionEntity';
 import TransactionRepository from './TransactionRepository';
 import TransactionValidate from './TransactionValdiate';
 
@@ -69,14 +82,16 @@ class TransactionService {
   }
 
   public async get(id: string, user: CustomJwtPayload): Promise<Transactions> {
-    idValidate(id);
+    const accountIsValid = idValidate(id);
+
+    if (accountIsValid) throw createError(accountIsValid, 400);
 
     try {
       const transaction = await this.transactionRepository.get(id);
 
       if (!transaction) throw createError(TRANSACTION_NOT_FOUND, 400);
 
-      await UserService.validateUserAccounts(transaction.accountId, user.id);
+      await AccountService.validateUserAccounts(transaction.accountId, user.id);
 
       return transaction;
     } catch (error: any) {
@@ -85,8 +100,10 @@ class TransactionService {
     }
   }
 
-  public async balance(accountId: string, user: CustomJwtPayload): Promise<{balance: number}> {
-    idValidate(accountId);
+  public async balance(accountId: string, user: CustomJwtPayload): Promise<{ balance: number }> {
+    const accountIsValid = idValidate(accountId, ACCOUNT_ERROR_MESSAGE);
+
+    if (accountIsValid) throw createError(accountIsValid, 400);
 
     const { id } = user;
 
@@ -112,6 +129,10 @@ class TransactionService {
     const { accountId } = data;
 
     const value = valueFormat(data.value);
+
+    if (data.accountId === data.receiverAccountId)
+      throw createError(TRANSFER_TO_SAME_ACCOUNT_ERROR, 400);
+
     try {
       const myAccount = await AccountService.getBalance(accountId, id);
 
@@ -161,16 +182,16 @@ class TransactionService {
         AccountService.getBalance(transaction.receiverAccountId),
       ]);
 
-      const isSender = senderAccount.userId === id;
-      const isReceiver = receiverAccount.userId === id;
+      const isSender = senderAccount ? senderAccount.userId === id : undefined;
+      const isReceiver = receiverAccount ? receiverAccount.userId === id : undefined;
 
       if (!isSender && !isReceiver) throw createError(TRANSACTION_NOT_FOUND, 409);
 
-      if (receiverAccount.balance < transaction.value)
-        throw createError(INSUFFICIENT_REVERT_BALANCE_MESSAGE, 400);
-
       if (![senderAccount.id, receiverAccount.id].includes(accountId))
         throw createError(TRANSACTION_NOT_FOUND, 409);
+
+      if (receiverAccount.balance < transaction.value)
+        throw createError(INSUFFICIENT_REVERT_BALANCE_MESSAGE, 400);
 
       const setTransaction = await this.transactionRepository.reverseTransaction(
         transactionId,
@@ -198,7 +219,10 @@ class TransactionService {
     }
   }
 
-  public async order(query: TransactionPagination, user: CustomJwtPayload): Promise<TransactionOrderInterface> {
+  public async order(
+    query: TransactionPagination,
+    user: CustomJwtPayload
+  ): Promise<TransactionOrderInterface> {
     this.transactionValidate.validateOrder(query);
 
     const { accountId, type } = query;
@@ -210,7 +234,7 @@ class TransactionService {
 
       if (!myAccount) throw createError(USER_INVALID, 409);
 
-      const where: any = { OR: [{accountId: myAccount.id}, {receiverAccountId: myAccount.id}] };
+      const where: any = { OR: [{ accountId: myAccount.id }, { receiverAccountId: myAccount.id }] };
 
       if (type) where.type = type;
 
@@ -225,7 +249,6 @@ class TransactionService {
       throw createError(error.message, status);
     }
   }
-
 }
 
 export default new TransactionService();

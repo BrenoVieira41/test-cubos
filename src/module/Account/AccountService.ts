@@ -30,9 +30,8 @@ class AccountService {
 
       const newAccount: Accounts | any = await this.accountRepository.create({
         ...data,
-        userId: user.id,
         balance: 0,
-      });
+      }, user.id);
 
       return newAccount;
     } catch (error: any) {
@@ -82,6 +81,16 @@ class AccountService {
       const status = error.status ? error.status : 500;
       throw createError(error.message, status);
     }
+  }
+
+  public async validateUserAccounts(accountId: string, userId: string): Promise<void> {
+    const accounts: Accounts[] = await this.accountRepository.findAccountByUser(userId);
+
+    if (!accounts || !accounts.length) throw createError(USER_INVALID, 409);
+
+    const accountsIds: string[] = accounts.map((it) => it.id);
+
+    if (!accountsIds.includes(accountId)) throw createError(USER_INVALID, 409);
   }
 }
 

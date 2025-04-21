@@ -4,6 +4,6 @@ export class CreateTransactionInput {
   value: number;
   description: string;
   type: TransactionTypeEnum;
-  accountId?: string;
+  accountId: string;
   receiverAccountId?: string;
 }

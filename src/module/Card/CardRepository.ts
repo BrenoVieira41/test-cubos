@@ -4,6 +4,7 @@ import { CreateCardInput } from './dto/create-card.input';
 import { CardAlreadyExistInput, GetCardInput } from './dto/get-card.input';
 import { PRISMA_ERROR } from '../Utils/ErrorInterface';
 import { CardTypeEnum } from './CardEntity';
+import { Prisma } from '@prisma/client';
 
 class CardRepository {
   async get(data: GetCardInput): Promise<Cards | any> {
@@ -71,10 +72,10 @@ class CardRepository {
     }
   }
 
-  async order(accounts: string[], skip: number, take: number): Promise<Cards[] | any> {
+  async order(query: Prisma.CardsWhereInput, skip: number, take: number): Promise<Cards[] | any> {
     try {
       const cards = await prisma.cards.findMany({
-        where: { accountId: { in: accounts } },
+        where: query,
         skip: skip,
         take: take,
         orderBy: { createdAt: 'desc' }
