@@ -35,7 +35,7 @@ class TransactionRepository {
   }
 
   async createTransactionInternal(data: CreateTransactionInput): Promise<Transactions | any> {
-    const { accountId, description, value, receiverAccountId } = data;
+    const { accountId, description, value, receiverAccountId, type } = data;
     return prisma.$transaction(async (tx) => {
       await tx.accounts.update({
         where: { id: receiverAccountId },
@@ -59,7 +59,7 @@ class TransactionRepository {
         data: {
           value,
           description,
-          type: TransactionTypeEnum.credit,
+          type: type,
           accountId: accountId,
           receiverAccountId: receiverAccountId,
         },

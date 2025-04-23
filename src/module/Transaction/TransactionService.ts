@@ -142,6 +142,7 @@ class TransactionService {
       const setValues = await this.transactionRepository.createTransactionInternal({
         ...data,
         value,
+        type: TransactionTypeEnum.debit,
       });
 
       return {
